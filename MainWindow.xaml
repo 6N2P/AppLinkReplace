@@ -1,0 +1,459 @@
+﻿<Window
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2007"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:d1="http://schemas.microsoft.com/expression/blend/2008" 
+        x:Class="AppLinkReplace.MainWindow"
+		xmlns:local="clr-namespace:AppLinkReplace"
+        
+		Title="Пакетная обработка файлов"
+        Height="413" 
+        Width="940" 
+        mc:Ignorable="d d1"
+		Loaded="WindowLoaded"
+		Closed="WindowClosed" 
+        HorizontalAlignment="Stretch" 
+        VerticalContentAlignment="Top"
+        Background="#646464"
+        BorderBrush="{x:Null}"
+        Icon="/AppLinkReplace;component/AppLinkReplase.ico">
+    <Window.Resources>
+        <!--<ObjectDataProvider x:Key="dataFromEnum"       MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+			<ObjectDataProvider.MethodParameters>
+				<x:Type TypeName="tflex:AutocadExportFileVersionType" />
+			</ObjectDataProvider.MethodParame
+		</ObjectDataProvider>-->
+
+        <CollectionViewSource x:Key="cTflexFileViewSource" 
+                              d:DesignSource="{d:DesignInstance my:CTflexFile, CreateList=True}" />
+        <ControlTemplate x:Key="PBWordReveal" 
+                         TargetType="{x:Type ProgressBar}">
+            <Grid>
+                <Border x:Name="PART_Track"
+		                BorderThickness="2" CornerRadius="5"
+		                Background="LightSkyBlue" BorderBrush="Navy" />
+                <ContentControl x:Name="PART_Indicator"
+		                        Content="{TemplateBinding Tag}"
+		                        Margin="4,0" FontSize="14"
+		                        Foreground="Black" Background="LightSkyBlue"
+		                        VerticalAlignment="Center"
+		                        HorizontalAlignment="Center" />
+            </Grid>
+        </ControlTemplate>
+    </Window.Resources>
+    <!--<Window.TaskbarItemInfo>
+        <TaskbarItemInfo />
+    </Window.TaskbarItemInfo>-->
+    <Grid Height="Auto" 
+      x:Name="grid1"
+      Width="Auto" 
+      DataContext="{StaticResource cTflexFileViewSource}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0"
+            Background="#a9afb6"               
+            CornerRadius="5">
+            <StackPanel Orientation="Horizontal">
+                <Button local:RoundButton.Image="/graf/Open_w.png" 
+                    Height="40" 
+                    HorizontalAlignment="Left"
+                    Margin="10,0,5,0" 
+                    x:Name="b_open_dir" 
+                    VerticalAlignment="Center" 
+                    Width="40" 
+                    Click="BOpenDirClick" 
+                    Style="{DynamicResource RoundButton}" 
+                    ToolTip="Указать директорию с файлами" />
+
+                <Button local:RoundButton.Image="/graf/control_play_w.png"
+                    Height="40" 
+                    HorizontalAlignment="Left"
+                    Margin="5,0"
+                    x:Name="b_start" 
+                    VerticalAlignment="Center"
+                    Width="40" 
+                    Click="BStartClick"
+                    Style="{DynamicResource RoundButton}"
+                    ToolTip="Запустить процесс обработки" />
+
+
+                <Button local:RoundButton.Image="/graf/clear_w.png" 
+                    Height="40" 
+                    HorizontalAlignment="Left"
+                    Margin="5,0"
+                    Name="bt_clear" 
+                    Style="{DynamicResource RoundButton}" 
+                    VerticalAlignment="Center" 
+                    Width="40" 
+                    Click="BtClearClick" 
+                    ToolTip="Очистить таблицу" />
+                <Button Height="40" 
+                    HorizontalAlignment="Left" 
+                    HorizontalContentAlignment="Right" 
+                    Margin="5,0"
+                    Name="btHelp" 
+                    local:RoundButton.Image="/graf/help_32_32_w.png" 
+                    Style="{DynamicResource RoundButton}" 
+                    ToolTip="Справка" 
+                    VerticalAlignment="Center"
+                    Width="40" Click="BtHelpClick" />
+                <Button local:RoundButton.Image="/graf/cancel_w.png" 
+                    Height="40" 
+                    Margin="5,0"
+                    x:Name="b_exit" 
+                    VerticalAlignment="Center" 
+                    Click="BExitClick" 
+                    Style="{DynamicResource RoundButton}"
+                    HorizontalContentAlignment="Right" 
+                    HorizontalAlignment="Left"
+                    Width="40" 
+                    ToolTip="Закрыть приложение" />
+                <TextBlock VerticalAlignment="Center"
+                       Margin="10,0">
+                <Hyperlink Name="m_hlink"  Click="HyperlinkClick" ></Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+        <Border Grid.Row="1"              
+            Background="#bbceed">
+            <StackPanel 
+                Orientation="Vertical" 
+                Name="st_panel">
+                <Expander Header="Свойства"
+                  Grid.Row="1"  
+                  HorizontalAlignment="Stretch"  
+                  Name="expander1" 
+                  Width="Auto" 
+                  Height="Auto" 
+                  ExpandDirection="Down" 
+                  VerticalContentAlignment="Stretch"
+                  VerticalAlignment="Stretch"                       
+                  IsExpanded="True">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButton}"                            
+                                Margin="10,0,3,0"
+                                Name="b_check_selected"
+                                HorizontalContentAlignment="Left"
+                                VerticalContentAlignment="Top" 
+                                Click="BCheckSelectedClick"
+                                BorderBrush="Black" 
+                                ToolTip="Отметить выбранное">
+                                <Image Source="/AppLinkReplace;component/graf/check_all_24_24.png" />
+                            </Button>
+                            <Button Style="{StaticResource myButton}"                            
+                                Name="b_check_all"  
+                                Click="BCheckAllClick"
+                                Foreground="Black" 
+                                ToolTip="Отметить все"
+                                BorderBrush="Black"
+                                BorderThickness="1" 
+                                ClickMode="Release" 
+                                SnapsToDevicePixels="False">
+                                <Image Source="/AppLinkReplace;component/graf/check_out_24_24.png" />
+                            </Button>
+                            <ToggleButton Style="{StaticResource myToggleButton}"
+                                      IsChecked="False"                                 
+                                      Name="tb_link_replace" 
+                                      ToolTip="Замена сылок"
+                                      BorderBrush="Black"
+                                      Click="TbLinkReplaceClick"
+                                      HorizontalAlignment="Left">
+                                <Image Source="/AppLinkReplace;component/graf/link_replase_24_24.png" />
+                            </ToggleButton>
+                            <ToggleButton Style="{StaticResource myToggleButton}" 
+                                      IsChecked="False" 
+                                      Name="tb_spec_update"
+                                      ToolTip="Обновить спецификацию"
+                                      Foreground="{x:Null}" 
+                                      BorderBrush="Black"
+                                      Click="TbSpecUpdateClick">
+                                <Image Source="/AppLinkReplace;component/graf/update_spec_24_24.png" />
+                            </ToggleButton>
+                            <ToggleButton Style="{StaticResource myToggleButton}"
+                                      IsChecked="False" 
+                                      Name="tb_export"
+                                      ToolTip="Експорт в *.png" 
+                                      BorderBrush="Black"
+                                      Click="TbExportClick">
+                                <Image Source="/AppLinkReplace;component/graf/png.png" />
+                            </ToggleButton>
+                            <ToggleButton Name="tbMonohrom" 
+                                      IsEnabled="False" 
+                                      Margin="3,0"
+                                      BorderThickness="1" 
+                                      Foreground="Black"
+                                      ForceCursor="False" 
+                                      HorizontalAlignment="Left"
+                                      Width="26"
+                                      Height="26">
+                                <ToggleButton.Resources>
+                                    <Image x:Key="OnImage" Source="/AppLinkReplace;component/graf/monohrom.png" />
+                                    <Image x:Key="OffImage" Source="/AppLinkReplace;component/graf/color.png" />
+                                </ToggleButton.Resources>
+                                <ToggleButton.Style>
+                                    <Style TargetType="ToggleButton">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Content" Value="{StaticResource OnImage}">
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="False">
+                                                <Setter Property="Content" Value="{StaticResource OffImage}">
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                            <ToggleButton Style="{StaticResource myToggleButton}"
+                                      BorderBrush="Black" 
+                                      IsChecked="False" 
+                                      Name="tb_crypt" 
+                                      ToolTip="Вставлять подпись"
+                                      IsEnabled="False" 
+                                      IsManipulationEnabled="False" 
+                                      Click="TbCryptClick" 
+                                      BorderThickness="1" 
+                                      Foreground="Black" 
+                                      ForceCursor="False">
+                                <Image Source="/AppLinkReplace;component/graf/crypt_24_24.png" />
+                            </ToggleButton>
+                            <ToggleButton Style="{StaticResource myToggleButton}"
+                                      BorderBrush="Black"
+                                      IsChecked="False"
+                                      Name="tb_export_dxf" 
+                                      ToolTip="Експорт в *.dxf" 
+                                      Click="TbExportDxfClick">
+                                <Image Source="/AppLinkReplace;component/graf/dxf.png" />
+                            </ToggleButton>
+                            <ToggleButton Style="{StaticResource myToggleButton}"
+                                      BorderBrush="Black" 
+                                      IsChecked="False" 
+                                      Name="tb_export_dwg"
+                                      ToolTip="Експорт в *.dwg">
+                                <Image Source="/AppLinkReplace;component/graf/export_dwg.png"
+                                   Stretch="UniformToFill" />
+                            </ToggleButton>
+                            <ToggleButton Style="{StaticResource myToggleButton}"
+                                      BorderBrush="Black" 
+                                      IsChecked="False" 
+                                      Name="tb_export_step"
+                                      ToolTip="Експорт в parasolid">
+                                <Image Source="/AppLinkReplace;component/graf/export_step.png" 
+                           Stretch="UniformToFill" />
+                            </ToggleButton>
+                            <ToggleButton Style="{StaticResource myToggleButton}"
+                                      BorderBrush="Black"
+                                      BorderThickness="1" 
+                                      ForceCursor="False"
+                                      Foreground="Black"
+                                      IsChecked="False"
+                                      IsEnabled="True"
+                                      IsManipulationEnabled="False"
+                                      Name="tb_tflex_var" 
+                                      ToolTip="Работа с переменными"
+                                      Checked="tb_tflex_var_Checked"
+                                      Visibility="Collapsed">
+                                <Image Source="/AppLinkReplace;component/graf/crypt_24_24.png" />
+                            </ToggleButton>
+
+                            <TextBox Height="23" 
+                                 FontSize="15"
+                                 IsEnabled="False" 
+                                 Margin="20,0,2,0"
+                                 MaxLength="5" 
+                                 Name="tb_inv_num" 
+                                 Text="100t" 
+                                 ToolTip="Укажите инвентарный номер"
+                                 Width="50" />
+
+                            <Button Style="{StaticResource myButton}"
+                                IsEnabled="False"
+                                Name="b_select_save_dir"
+                                ButtonBase.Click="BSelectSaveDirClick"
+                                BorderBrush="Black" 
+                                Foreground="Black" 
+                                Background="{x:Null}" 
+                                ToolTip="Укажите каталог для сохранения *.png">
+                                <Image Source="/AppLinkReplace;component/graf/folder.png" />
+                            </Button>
+                            <ComboBox x:Name="cb_layer"
+                                  Width="100"
+                                  Margin="2"
+                                  ToolTip="Слой для dfx"/>
+
+                            <Expander ExpandDirection="Right"
+                                  Width="auto">
+                                <Grid Margin="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <CheckBox Content="Имя" 
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True" 
+                                      Name="cbName" 
+                                      Checked="cbName_Checked" 
+                                      Unchecked="cbName_Unchecked" />
+                                    <CheckBox Content="Тип" 
+                                      Grid.Row="1"
+                                      Grid.Column="0"
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True"  
+                                      Name="cbType" 
+                                      Checked="cbType_Checked"
+                                      Unchecked="cbType_Unchecked" />
+                                    <CheckBox Content="Формат"
+                                      Grid.Column="1"
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True"
+                                      Name="cbFormat" 
+                                      Checked="cbFormat_Checked" 
+                                      Unchecked="cbFormat_Unchecked" />
+                                    <CheckBox Content="Масса"
+                                      Grid.Row="1"
+                                      Grid.Column="1"
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True" 
+                                      Name="chMassa"
+                                      Checked="chMassa_Checked"
+                                      Unchecked="chMassa_Unchecked" />
+                                    <CheckBox Content="Площадь" 
+                                      Grid.Column="2"
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True" 
+                                      Name="cbArea"  
+                                      Checked="cbArea_Checked" 
+                                      Unchecked="cbArea_Unchecked" />
+                                    <CheckBox Content="Материал" 
+                                      Grid.Row="1"
+                                      Grid.Column="2"
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True" 
+                                      Name="cbMaterial" 
+                                      Checked="cbMaterial_Checked" 
+                                      Unchecked="cbMaterial_Unchecked" />
+                                    <CheckBox Content="Сечение"
+                                      Grid.Column="3"
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True" 
+                                      Name="cbSech" 
+                                      Checked="cbSech_Checked" 
+                                      Unchecked="cbSech_Unchecked" />
+                                    <CheckBox Content="Размер" 
+                                      Grid.Row="1"
+                                      Grid.Column="3"
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True" 
+                                      Name="cbSize" 
+                                      Checked="cbSize_Checked"
+                                      Unchecked="cbSize_Unchecked" />
+                                    <CheckBox Content="Путь"
+                                      Grid.Column="4"
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True"
+                                      Name="cbPath" 
+                                      Checked="cbPath_Checked" 
+                                      Unchecked="cbPath_Unchecked" />
+                                    <CheckBox Content="Прим." 
+                                      Grid.Row="1"
+                                      Grid.Column="4"
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True" 
+                                      Name="cbComment" 
+                                      Checked="cbComment_Checked" 
+                                      Unchecked="cbComment_Unchecked" />
+                                    <CheckBox Content="Лист" 
+                                       Grid.Column="5"
+                                       IsChecked="True" 
+                                       Name="cbList" 
+                                       Style="{StaticResource myCheckBox}" 
+                                       Width="auto" 
+                                       Checked="cbList_Checked" 
+                                       Unchecked="cbList_Unchecked" />
+                                    <CheckBox Content="Поз."
+                                      Grid.Row="1"
+                                      Grid.Column="5"
+                                      Style="{StaticResource myCheckBox}" 
+                                      IsChecked="True" 
+                                      Name="cbPoz"  
+                                      Unchecked="cbPoz_Unchecked"
+                                      Checked="cbPoz_Checked" />
+                                </Grid>
+                            </Expander>
+                        </StackPanel>
+
+
+
+
+                        <!--<ComboBox Grid.Column="2" Height="23" IsEnabled="False" HorizontalAlignment="Left" Margin="196,10,0,0" ItemsSource='{Binding Source={StaticResource dataFromEnum}}' Name="cb_version" VerticalAlignment="Top" Width="120" />
+				<CheckBox Content="AutoCAD" IsEnabled="False" Grid.Column="2" Height="16" HorizontalAlignment="Left" Margin="322,17,0,0" Name="cb_autocad" VerticalAlignment="Top" Width="74" />-->
+
+                    </Grid>
+                </Expander>
+            </StackPanel>
+        </Border>
+        <DataGrid AlternatingRowBackground="#d2def3"
+              Margin="5"
+              AreRowDetailsFrozen="True" 
+              AutoGenerateColumns="False" 
+              CanUserAddRows="False" 
+              CanUserDeleteRows="False" 
+              ClipToBounds="False"
+              EnableRowVirtualization="True"
+              Focusable="True" 
+              HorizontalContentAlignment="Stretch" 
+              HorizontalScrollBarVisibility="Visible"
+              ItemsSource="{Binding}" 
+              Name="cTflexFileDataGrid" 
+              RowBackground="{Binding}" 
+              RowDetailsVisibilityMode="VisibleWhenSelected"
+              UseLayoutRounding="False" 
+              VerticalContentAlignment="Stretch" 
+              VerticalScrollBarVisibility="Visible" 
+              Grid.Row="2" 
+              ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" 
+              Background="White" 
+              RowStyle="{DynamicResource DataGridRowStyle1}"
+              BorderBrush="#a9afb6">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn x:Name="checkColumn" Binding="{Binding Check}" Width="SizeToHeader" />
+                <DataGridTextColumn x:Name="fileNameColumn" Binding="{Binding FileName}" Header="Имя файла" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="docTypeColumn"  Binding="{Binding TflexVariableInfo.DocType}" Header="Тип" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="listColumn"  Binding="{Binding TflexVariableInfo.List}" Header="Лист" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="pozColumn"  Binding="{Binding TflexVariableInfo.Poz}" Header="Поз." IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="formatColumn" Binding="{Binding TflexVariableInfo.Format}" Header="Формат" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="massaColumn" Binding="{Binding TflexVariableInfo.Massa}" Header="Масса" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="areaColumn" Binding="{Binding TflexVariableInfo.Area}" Header="Площадь" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="materialColumn" Binding="{Binding TflexVariableInfo.Material}" Header="Материал" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="sechMkmdColumn" Binding="{Binding TflexVariableInfo.SechMKMD}" Header="Сеч. МКМД" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="commentColumn" Binding="{Binding TflexVariableInfo.Comment}" Header="Примечание" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridCheckBoxColumn x:Name="readOnlyColumn" Binding="{Binding ReadOnly}" Header="RW" IsReadOnly="True" Width="SizeToHeader" />
+                <DataGridTextColumn x:Name="docsID" Binding="{Binding TflexVariableInfo.DOCsID}" Header="DOCsID" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="fileSizeColumn" Binding="{Binding FileSize}" Header="Размер" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="fullFileNameColumn" Binding="{Binding FullFileName}" Header="Полный путь" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn x:Name="nameColumn" Binding="{Binding TflexVariableInfo.Name}" Header="Имя" IsReadOnly="True" Width="SizeToCells" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+
+    </Grid>
+</Window>

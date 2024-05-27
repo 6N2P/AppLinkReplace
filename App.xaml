@@ -1,0 +1,31 @@
+﻿<Application x:Class="AppLinkReplace.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Class/RoundButton.xaml" />
+                <ResourceDictionary Source="DGResource.xaml" />
+                <ResourceDictionary Source="ScrollBar.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="myButton" TargetType="Button">
+                <Setter Property="Height" Value="26"/>
+                <Setter Property="Width" Value="26"/>
+                <Setter Property="Margin" Value="2,0"/>
+            </Style>
+            <Style x:Key="myToggleButton" TargetType="ToggleButton">
+                <Setter Property="Height" Value="26"/>
+                <Setter Property="Width" Value="26"/>
+                <Setter Property="Margin" Value="2,0"/>
+            </Style>
+            <Style x:Key="myCheckBox" TargetType="CheckBox">
+                <Setter Property="Height" Value="14"/>
+                <Setter Property="Margin" Value="1,0"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
